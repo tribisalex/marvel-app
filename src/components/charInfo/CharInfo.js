@@ -23,6 +23,8 @@ class CharInfo extends Component {
             this.updateChar();
             console.log('charId', this.props.charId);
         }
+
+        // this.foo.bar = 0;
     }
 
     onCharLoaded = (char) => {
