@@ -76,7 +76,8 @@ class CharList extends Component {
 
     shadowChar = () => {
         if (this.myRef) {
-            this.myRef.style.background = 'red';
+            this.myRef.classList.add('char__item_selected');
+            // this.myRef.style.border = '4px solid red';
         }
     };
 
