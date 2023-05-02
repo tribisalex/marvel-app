@@ -14,17 +14,15 @@ class CharList extends Component {
         charEnded: false,
     };
 
-    marvelServise = new MarvelService();
+    marvelService = new MarvelService();
 
     componentDidMount() {
         this.onRequest();
-
-        // this.updateChars();
     }
 
     onRequest = (offset) => {
         this.onCharListLoading();
-        this.marvelServise
+        this.marvelService
         .getAllCharacters(offset)
         .then(this.onCharListLoaded)
         .catch(this.onError);
@@ -60,39 +58,32 @@ class CharList extends Component {
         });
     };
 
-    updateChars = () => {
-
-        this.onCharListLoading();
-
-        this.marvelServise
-        .getAllCharacters()
-        .then(this.onCharListLoaded)
-        .catch(this.onError);
-    }
+    liItemRefs = [];
 
     setLiRef = (el) => {
-        this.myRef = el;
+        this.liItemRefs.push(el);
     };
 
-    shadowChar = () => {
-        if (this.myRef) {
-            this.myRef.classList.add('char__item_selected');
-            // this.myRef.style.border = '4px solid red';
-        }
+    shadowChar = (id) => {
+        this.liItemRefs.forEach((item) =>
+          item.classList.remove('char__item_selected')
+        );
+        this.liItemRefs[id].classList.add('char__item_selected');
+        this.liItemRefs[id].focus();
     };
 
     renderItems(charList) {
         return (
           <ul className="char__grid">
-              {charList.map(item => {
+              {charList.map((item, i) => {
                   return (
-                    <li  onClick={() => {
+                    <li onClick={() => {
                         this.props.onCharSelected(item.id);
-                        this.shadowChar();
+                        this.shadowChar(i);
                     }}
-                         key={item.id}
-                         className="char__item"
-                         ref={this.setLiRef}>
+                        key={item.id}
+                        className="char__item"
+                        ref={this.setLiRef}>
                         {
                             item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
                               ? <img src={item.thumbnail}
@@ -113,7 +104,7 @@ class CharList extends Component {
 
 
     render() {
-        const { charList, loading, error, offset, newItemLoading, charEnded } = this.state;
+        const {charList, loading, error, offset, newItemLoading, charEnded} = this.state;
         const items = this.renderItems(charList);
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
@@ -128,7 +119,7 @@ class CharList extends Component {
               <button
                 className="button button__main button__long"
                 disabled={newItemLoading}
-                style={{ display: charEnded ? 'none' : 'block' }}
+                style={{display: charEnded ? 'none' : 'block'}}
                 onClick={() => this.onRequest(offset)}
               >
                   <div className="inner">load more</div>
